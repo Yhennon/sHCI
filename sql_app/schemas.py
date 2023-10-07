@@ -18,9 +18,13 @@ class Item(ItemBase):
     class Config:
         orm_mode = True
 
+# A Base class for users
+
 
 class UserBase(BaseModel):
     email: str
+
+# An extended class for user, with more attributes, needed for different querie
 
 
 class UserCreate(UserBase):
