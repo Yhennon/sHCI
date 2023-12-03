@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from my_app import models, schemas
 from enum import Enum
-
+from sqlalchemy import asc, desc
 
 def create_distributor(db: Session, distributor: schemas.DistributorCreate):
     db_distributor = models.Distributor(
@@ -11,6 +11,8 @@ def create_distributor(db: Session, distributor: schemas.DistributorCreate):
     db.refresh(db_distributor)
     return db_distributor
 
+def get_distributor_by_id(db:Session, id: int):
+    return db.query(models.Distributor).filter(models.Distributor.id==id).first()
 
 def get_distributor_by_title(db: Session, title: str):
     return db.query(models.Distributor).filter(models.Distributor.title == title).first()
@@ -38,24 +40,54 @@ def create_distributor_item(db: Session, item: schemas.ItemCreate, distributor_i
     db.refresh(db_item)
     return db_item
 
-
-# def get_itemtypes(db: Session, skip: int = 0, limit: int = 100):
-#     return db.query(models.ItemType).offset(skip).limit(limit).all()
-
 def get_enum_values(enum_class: Enum):
     return [item.value for item in enum_class]
 
-def get_all_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
+def get_all_items(db: Session, skip: int = 0, limit: int = 100, sort_by_price_asc: bool = False):
+    if sort_by_price_asc:
+        return db.query(models.Item).order_by(models.Item.price.asc()).offset(skip).limit(limit).all()
+    else:
+        return db.query(models.Item).order_by(models.Item.price.desc()).offset(skip).limit(limit).all()
 
-# get all items of a distributor, search by id of distributor
+def get_all_items_by_price(db: Session, sort_by_price_asc: bool = False):
+    sort_by_price_asc: bool = False
+    pass
 
+def get_all_items_by_price():
+    pass
+
+def get_all_items_by_distributor():
+    pass
+
+def get_all_items_sorted(db: Session, sort: bool = False, price_sort: str = "", name_sort: str = "", item_type_sort: str = "", distributor_sort: str = ""):
+    # Dictionary mapping parameter names to database attributes
+    sort_attributes = {
+        'price_sort': 'price',  
+        'name_sort': 'name',
+        'item_type_sort': 'item_type',
+        'distributor_sort': 'distributor'
+    }
+    print(item_type_sort)
+    query = db.query(models.Item) 
+
+    itemTypes = [item.value for item in models.ItemType]
+    # print(itemTypes)
+
+    if sort:
+        order_criteria = []
+        for param, attribute in sort_attributes.items():
+            sort_value = getattr(locals()[param], 'lower')() 
+            if sort_value in ['asc', 'desc', itemTypes]:
+                order_criteria.append(asc(attribute) if sort_value == 'asc' else desc(attribute))
+
+        if order_criteria:
+            query = query.order_by(*order_criteria)
+
+    items = query.all()    
+    return items
 
 def get_distributor_items(db: Session, distributor_id: int, skip: int = 0, limit: int = 100):
     pass
-
-# Get all items of a distributor, search by ShopName? (rename ShopName enum)
-
 
 def get_distributor_items_by_distributorID(db: Session, distributor_id: int, skip: int = 0, limit: int = 100):
     pass

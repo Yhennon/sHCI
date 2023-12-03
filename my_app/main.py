@@ -19,6 +19,10 @@ def get_db():
 # Create distributor if it doesnt already exist (checked by title and address)
 # Works
 
+@app.get("/distributors/{distributor_id}/", response_model= schemas.DistributorBase)
+def read_distributor_by_id(distributor_id: int, db: Session = Depends(get_db)):
+    return crud.get_distributor_by_id(db=db,id=distributor_id)
+
 
 @app.post("/distributors/", response_model=schemas.Distributor)
 def create_distributor(distributor: schemas.DistributorCreate, db: Session = Depends(get_db)):
@@ -70,8 +74,8 @@ def read_distributor_addresses(skip: int = 0, limit: int = 100, db: Session = De
 
 
 @app.get("/items/", response_model=list[schemas.Item])
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = crud.get_all_items(db, skip, limit)
+def read_items(skip: int = 0, limit: int = 100, sort: bool = False , db: Session = Depends(get_db)):
+    items = crud.get_all_items(db, skip, limit,sort_by_price_asc= sort)
     return items
 
 # @app.get("/itemtypes/",response_model=list[schemas.ItemType])
@@ -82,3 +86,8 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 @app.get("/itemtypes/", response_model=list[str])
 async def read_enum_values():
     return crud.get_enum_values(models.ItemType)
+
+@app.get("/items-sorted/", response_model=list[schemas.Item])
+def read_items_sorted(sort: bool = False, price_sort: str = "", name_sort: str = "", item_type_sort: str = "", distributor_sort: str = "" , db: Session = Depends(get_db)):
+    items = crud.get_all_items_sorted(db, sort= sort, price_sort=price_sort, name_sort=name_sort, item_type_sort=item_type_sort, distributor_sort=distributor_sort)
+    return items
