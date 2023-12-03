@@ -73,3 +73,12 @@ def read_distributor_addresses(skip: int = 0, limit: int = 100, db: Session = De
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_all_items(db, skip, limit)
     return items
+
+# @app.get("/itemtypes/",response_model=list[schemas.ItemType])
+# def read_itemtypes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     itemtypes = crud.get_itemtypes(db, skip=skip, limit=limit)
+#     return itemtypes
+
+@app.get("/itemtypes/", response_model=list[str])
+async def read_enum_values():
+    return crud.get_enum_values(models.ItemType)

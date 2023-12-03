@@ -42,3 +42,4 @@ class Distributor(DistributorBase):
 
     class Config:
         orm_mode = True
+        

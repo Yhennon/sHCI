@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from my_app import models, schemas
+from enum import Enum
 
 
 def create_distributor(db: Session, distributor: schemas.DistributorCreate):
@@ -37,6 +38,12 @@ def create_distributor_item(db: Session, item: schemas.ItemCreate, distributor_i
     db.refresh(db_item)
     return db_item
 
+
+# def get_itemtypes(db: Session, skip: int = 0, limit: int = 100):
+#     return db.query(models.ItemType).offset(skip).limit(limit).all()
+
+def get_enum_values(enum_class: Enum):
+    return [item.value for item in enum_class]
 
 def get_all_items(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Item).offset(skip).limit(limit).all()
