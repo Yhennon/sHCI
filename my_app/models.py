@@ -12,9 +12,6 @@ class ShopName(str, Enum):
     bilka = "Bilka"
     fotex = "føtex"
 
-# Will i use this
-
-
 class PantType(str, Enum):
     pant_a = "Pant A"  # (less than 1L glass bottles and aluminium cans
     pant_b = "Pant B"  # (less than 1L plastic bottles)

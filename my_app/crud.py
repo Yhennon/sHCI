@@ -71,7 +71,6 @@ def get_all_items_sorted(db: Session, sort: bool = False, price_sort: str = "", 
     query = db.query(models.Item) 
 
     itemTypes = [item.value for item in models.ItemType]
-    # print(itemTypes)
 
     if sort:
         order_criteria = []
